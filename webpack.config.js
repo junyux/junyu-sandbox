@@ -9,13 +9,22 @@ function toCamelCase(str) {
 module.exports = function (env = {}) {
   return {
     mode: env.production ? 'production' : 'none',
-    entry: './src/index',
+    entry: {
+      app: './src/index.js',
+      'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+      'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
+      'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
+      'html.worker': 'monaco-editor/esm/vs/language/html/html.worker',
+      'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker',
+    },
     output: {
+      globalObject: 'self',
       path: path.resolve(__dirname, 'dist'),
-      filename: `${packageConfig.name}.js`,
+      filename: '[name].js',
       publicPath: '/js/',
       library: [toCamelCase(packageConfig.name)],
       libraryTarget: 'umd',
+      libraryExport: 'default',
     },
     // resolve: {
     //
@@ -30,6 +39,9 @@ module.exports = function (env = {}) {
             loader: 'babel-loader',
             options: {babelrc: true},
           },
+        }, {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
         },
       ],
 
